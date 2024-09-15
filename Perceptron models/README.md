@@ -15,7 +15,7 @@ It chas the following main parts:
 - **Activation Function** : The weighted sum of the input and bias is passed through an activation function which determine the output of the perceptron. In its simplest form a perceptron uses a step function, where the output is either 0 or 1 depending on whether the weighted sum is greater than or less than a threshold.
 
 ## Learning in Perceptron
-The perceptron learns through a **iterative process**. It updates its weights based on the error between the predicted and actual output using a process called **gradient descent**. This learning rule adjusts the weights in proportion to the error, thereby improving the accuracy over time.
+The perceptron learns through a **iterative process**. It updates its weights based on the error between the predicted and actual output using a process called **gradient descent**. This learning rule adjusts the weights in proportion to the error, thereby improving the accuracy over time.  
 W(new) = W(old) + 🔺W  
 🔺W = n(y(true) - y(predicted))X  
 where n is the learning rate.  
