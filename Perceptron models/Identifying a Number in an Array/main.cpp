@@ -1,7 +1,10 @@
 #include<iostream>
 #include<vector>
+#include<cmath>
 
 #define LEARNINGRATE 0.01
+#define TOLERANCE 0.000001
+#define maxEpoch 1000
 
 size_t numberOfRows(std::vector<std::vector<double>> &Dataset){
     return Dataset.size();
@@ -33,23 +36,30 @@ double ReLU(double x){
     return x>=0?x:0;
 }
 
-std::vector<double> Backpropogation(std::vector<std::vector<double>> &Dataset,std::vector<double> &myvec,std::vector<double> &weights){
+void Backpropogation(std::vector<std::vector<double>> &Dataset,std::vector<double> &targets,std::vector<double> &weights,size_t maxEpoch){
     
-    std::vector<double> newWeightVector(4,0);
+    size_t rows  = numberOfRows(Dataset);
+    size_t cols = numberOfColumns(Dataset);
     
-    for(int i = 0;i<myvec.size();i++){
-        double result = ReLU(myvec[i]);
-        std::vector<double> subset = Dataset[i];
-        while(result<1){
-            weights[i] = weights[i] + LEARNINGRATE*(1- result)*subset[i];
-            myvec[i] = myvec[i] + WeightedSum(Dataset,weights)[i];
-            result = ReLU(myvec[i]);
+    double previousLoss = std::numeric_limits<double>::max();
+    
+    for(size_t epoch = 0;epoch<maxEpoch;epoch++){
+        std::vector<double> myvec = WeightedSum(Dataset,weights);
+        double totalloss = 0;
+        for(size_t i = 0;i<cols;i++){
+            double Output = ReLU(myvec[i]);
+            double error = targets[i]-Output;
+            
+            for(size_t j = 0;j<rows;j++){
+                weights[j]+=LEARNINGRATE*(error)*Dataset[j][i];
+            }
+            totalloss+=std::pow(error,2);
         }
-        newWeightVector[i] = result;
+        if(std::fabs(previousLoss - totalloss)<TOLERANCE){
+            break;
+        }
+        previousLoss = totalloss;
     }
-    
-  return newWeightVector;
-  
 }
 
 int main()
@@ -61,28 +71,12 @@ int main()
                                                 {0,0,0,1}};
     
     std::vector<double> weights = {-0.4,0.3,-0.1,0.7};
-    std::cout<<"Weights Vector : "<<"\n";
-    for(int i = 0;i<weights.size();i++){
-        std::cout<<weights[i]<<" ";
-    }
-    std::cout<<"\n";
-    std::vector<double> myvec = WeightedSum(Dataset,weights);
-    std::cout<<"Weighted Sum vector : "<<"\n";
-    for(int i = 0;i<myvec.size();i++){
-        std::cout<<myvec[i]<<" ";
-    }
+    std::vector<double> targets = {1,1,1,1};
     
-    std::cout<<"\n";
-    std::cout<<"Output vector: "<<"\n";
-    for(int i = 0;i<myvec.size();i++){
-        std::cout<<ReLU(myvec[i])<<" ";
-    }
-    std::cout<<"\n";
-    
-    std::vector<double> newWeightVector = Backpropogation(Dataset,myvec,weights);
+    Backpropogation(Dataset,targets,weights,maxEpoch);
     std::cout<<"New Weight Vector"<<"\n";
-    for(int i = 0;i<newWeightVector.size();i++){
-        std::cout<<ReLU(newWeightVector[i])<<" ";
+   for(double w:weights){
+        std::cout<<w<<" ";
     }
     
     return 0;
