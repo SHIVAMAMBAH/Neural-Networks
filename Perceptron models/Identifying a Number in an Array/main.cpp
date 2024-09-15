@@ -43,7 +43,15 @@ void Backpropogation(std::vector<std::vector<double>> &Dataset,std::vector<doubl
     size_t rows  = numberOfRows(Dataset);
     size_t cols = numberOfColumns(Dataset);
     
-    double previousLoss = std::numeric_limits<double>::max();// Initialize to a large value
+    /*previousloss is used to track the loss from the previous iteration or epoch.
+        This helps in monitoring the loss value from the previous ineration or epoch.
+        By comparing the current loss with the previousloss, you can check if the model is converging.
+         if the loss decreases consistently, it indicated that the model is learning and moving towards better weights*/
+    
+    /* we can use previousloss to set a stoping criteria. For example, of the loss difference bewteen epoched becomes very
+    small, we might decide to stop training,as the model has likely reached an optimal or near-optimal state */
+        
+    double previousloss = std::numeric_limits<double>::max();// Initialize to a large value
     
     for(size_t epoch = 0;epoch<maxEpoch;epoch++){
         std::vector<double> myvec = WeightedSum(Dataset,weights);
@@ -55,7 +63,7 @@ void Backpropogation(std::vector<std::vector<double>> &Dataset,std::vector<doubl
             for(size_t j = 0;j<rows;j++){
                 weights[j]+=LEARNINGRATE*(error)*Dataset[j][i];
             }
-            totalloss+=std::pow(error,2);
+            totalloss+=std::pow(error,2);// using the Mean Squared Error(MSE)
         }
         if(std::fabs(previousLoss - totalloss)<TOLERANCE){
             break; // stop training if the loss improvement is below tolerance
