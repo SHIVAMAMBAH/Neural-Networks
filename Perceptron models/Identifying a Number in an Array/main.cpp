@@ -6,14 +6,16 @@
 #define TOLERANCE 0.000001
 #define maxEpoch 1000
 
+// gives the number of rows in the dataset
 size_t numberOfRows(std::vector<std::vector<double>> &Dataset){
     return Dataset.size();
 }
-
+// gives the number of columns in the dataset
 size_t numberOfColumns(std::vector<std::vector<double>> &Dataset){
     return Dataset[0].size();
 }
 
+// calculates the weighted sum
 std::vector<double> WeightedSum(std::vector<std::vector<double>> &Dataset,std::vector<double> &weights){
     
     size_t rows = numberOfRows(Dataset);
